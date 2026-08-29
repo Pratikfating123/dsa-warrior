@@ -1,0 +1,5 @@
+import React,{useEffect,useState} from "react";
+import {ArrowLeft,ChevronRight,CheckCircle2} from "lucide-react";
+import {api} from "../lib/api.js";
+const names={arrays:"🏡 Array Village",recursion:"🏰 Recursion Castle",trees:"🌲 Tree Forest",sorting:"⚓ Sorting Harbor"};
+export default function Topic({topic,onBack,onChallenge,user}){const [items,setItems]=useState([]);useEffect(()=>{api(`/challenges?topic=${topic}`).then(d=>setItems(d.challenges))},[topic]);const solved=new Set(user.solvedChallenges||[]);return <main className="content"><button className="back" onClick={onBack}><ArrowLeft size={16}/> Back</button><div className="topichead"><div><span className="eyebrow">ZONE</span><h1>{names[topic]}</h1><p>Choose a quest and earn XP.</p></div></div><div className="quests">{items.map((c,i)=><button className="quest" key={c.id} onClick={()=>onChallenge(c.id)}><span className="qnum">{solved.has(c.id)?<CheckCircle2/>:i+1}</span><div><b>{c.title}</b><p>{c.description}</p><small>{c.difficulty} · +{c.xp} XP</small></div><ChevronRight/></button>)}</div></main>}

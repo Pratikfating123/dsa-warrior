@@ -1,0 +1,7 @@
+import React,{useState} from "react";
+import {api} from "../lib/api.js";
+export default function Auth({onAuth}){
+ const [mode,setMode]=useState("login"),[name,setName]=useState(""),[email,setEmail]=useState("demo@dsaquest.local"),[password,setPassword]=useState("Demo123!"),[error,setError]=useState(""),[busy,setBusy]=useState(false);
+ async function submit(e){e.preventDefault();setBusy(true);setError("");try{const d=await api(`/auth/${mode}`,{method:"POST",body:JSON.stringify(mode==="login"?{email,password}:{name,email,password})});localStorage.setItem("dsaquest_token",d.token);onAuth(d.user)}catch(e){setError(e.message)}finally{setBusy(false)}}
+ return <div className="auth-page"><form className="auth-card" onSubmit={submit}><div className="auth-logo">⚔️</div><h1>DSA Quest</h1><p>Turn DSA practice into an adventure.</p>{mode==="register"&&<input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} required/>}<input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><input type="password" value={password} onChange={e=>setPassword(e.target.value)} required/><button className="primary wide" disabled={busy}>{busy?"Loading...":mode==="login"?"Enter the world":"Create account"}</button>{error&&<div className="errorbox">{error}</div>}<button type="button" className="switch" onClick={()=>setMode(mode==="login"?"register":"login")}>{mode==="login"?"New adventurer? Create account":"Already have an account? Login"}</button><small>Demo: demo@dsaquest.local / Demo123!</small></form></div>
+}
